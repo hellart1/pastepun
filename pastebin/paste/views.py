@@ -1,27 +1,17 @@
-import datetime
-import os
 import requests
-from datetime import timedelta, datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms import model_to_dict
-
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import render, redirect, get_object_or_404
-from django.conf import settings
-from botocore.exceptions import BotoCoreError, ClientError
-from django.db import IntegrityError, DatabaseError
+from django.http import Http404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import FormView, View, DetailView, TemplateView
+from django.views.generic import FormView, DetailView, TemplateView
 from rest_framework import generics
-from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .forms import TextForm
 from .models import Paste
-from .s3_utils import get_unique_hash, s3_resource, s3_client
+from .s3_utils import get_unique_hash
 from .serializers import PasteSerializer
-from .utils import *
+from .utils import S3UtilsMixin, PasteExpirationMixin
 
 
 class Home(S3UtilsMixin, FormView):
@@ -34,30 +24,28 @@ class Home(S3UtilsMixin, FormView):
         return reverse_lazy('user_text', kwargs={'data': self.paste_hash})
 
     def form_valid(self, form):
-        print('form_valid')
         paste_text = form.cleaned_data['paste_text']
         self.paste_hash = get_unique_hash()
-        # max_size = 10 * 1024 * 10244
 
         self.put_object_in_s3(
             file_hash=self.paste_hash,
             text=paste_text
         )
-        print('put_object_in_s3')
 
-        self.model.objects.create(
-            hash=self.paste_hash,
-            expiration_type=form.cleaned_data['expiration'],
-            user_id=self.request.user.id
-        )
-        print('создался обьект в бд')
+        serializer = PasteSerializer(data={
+            'hash': self.paste_hash,
+            'expiration_type': form.cleaned_data['expiration']
+        }, context={'request': self.request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
         return super().form_valid(form)
 
 
-class User_text(DetailView):
+class UserText(DetailView):
     model = Paste
     template_name = "paste/user_text.html"
-    context_object_name = 'post'
+    context_object_name = 'paste'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -76,7 +64,7 @@ class User_text(DetailView):
 
             content = requests.get(response['download_url'])
             if content.status_code == 200:
-                return content.text
+                return content
 
         except Exception as e:
             print(f'Ошибка: {e}')
@@ -117,7 +105,10 @@ class PasteAPIList(PasteExpirationMixin, generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         obj = self.get_object()
         presigned_url = self.expiration_handler(obj)
-        serializer = self.get_serializer_class()(obj, context={'download_url': presigned_url})
+        serializer = self.get_serializer_class()(obj, context={
+            'download_url': presigned_url,
+            'request': request
+        })
 
         return Response(serializer.data)
 

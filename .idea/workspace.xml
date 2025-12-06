@@ -5,10 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="02a8696e-412f-4270-8927-50fbbc936ce0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/pastebin.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/pastebin.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/paste/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/paste/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/paste/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/paste/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/paste/static/paste/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/paste/static/paste/css/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/paste/templates/paste/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/paste/templates/paste/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/paste/templates/paste/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/paste/templates/paste/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/paste/templates/paste/user_text.html" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/paste/templates/paste/user_text.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/paste/tests/test_url.py" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/paste/tests/test_url.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/paste/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/paste/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/paste/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/paste/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/paste/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/paste/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/pastebin/hash_keys.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/users/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/users/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/users/templates/users/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/users/templates/users/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/users/templates/users/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/users/templates/users/signup.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/users/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/users/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pastebin/users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/pastebin/users/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,25 +69,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Notification.DisplayName-DoNotAsk-KeymapMissing&quot;: &quot;Keymap missing&quot;,
-    &quot;Notification.DoNotAsk-KeymapMissing&quot;: &quot;true&quot;,
-    &quot;Python.hash_keys.executor&quot;: &quot;Run&quot;,
-    &quot;Python.makemigrations.executor&quot;: &quot;Run&quot;,
-    &quot;Python.migrate.executor&quot;: &quot;Run&quot;,
-    &quot;Python.python manage.py runserver.executor&quot;: &quot;Run&quot;,
-    &quot;Python.start.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;local&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/hellart/Загрузки/codeium-2.10.0.zip&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Notification.DisplayName-DoNotAsk-KeymapMissing": "Keymap missing",
+    "Notification.DoNotAsk-KeymapMissing": "true",
+    "Python.hash_keys.executor": "Run",
+    "Python.makemigrations.executor": "Run",
+    "Python.migrate.executor": "Run",
+    "Python.python manage.py runserver.executor": "Run",
+    "Python.start.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "local",
+    "last_opened_file_path": "/home/hellart/Загрузки/codeium-2.10.0.zip",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\pune\Desktop\projects\pastebin\pastebin\users\templates\users" />

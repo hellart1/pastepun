@@ -17,9 +17,10 @@
                 <option value="1H">1 Hour</option>
                 <option value="1D">1 Day</option>
             </select>
-            {{ form.non_field_errors }}
+            <div id='form-errors' class="form-errors">{{ form.non_field_errors }}</div>
             <input type="submit" id="btn-submit" class="btn submit" value="Submit">
         </div>
     </form>
 </div>
+<script src="{% static 'paste/js/script.js' %}"></script>
 {% endblock %}

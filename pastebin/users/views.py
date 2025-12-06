@@ -19,9 +19,4 @@ class RegisterUser(CreateView):
     template_name = 'users/signup.html'
 
     def get_success_url(self):
-        return reverse_lazy('home')
-
-
-def logout_user(request):
-    logout(request)
-    return HttpResponseRedirect(reverse('home'))
+        return reverse_lazy('users:login')

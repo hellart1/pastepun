@@ -75,7 +75,8 @@ class PasteExpirationMixin(S3UtilsMixin):
                 expiration=expiration_type
             )
             cache.set(key, url, timeout=30)
-            print(cache.client.get_client().keys('*'))
+            print(f"Ключи: {cache.client.get_client().keys('*')}")
+            print(f"Ссылка: {url}")
             return url
         except Exception as e:
             print('ошибка кэширования:', e)

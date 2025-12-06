@@ -6,15 +6,14 @@
             <p>Введите свою почту и пароль.</p>
             <form action="" method="post">
                 {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
                 <div class="form-group">
-<!--                    <label for="username">Электронная почта:</label>-->
-<!--                    <input type="text" id="email" name="email" class="form-control" required />-->
                     <label for="username">Имя пользователя</label>
                     <input type="text" id="username" name="username" class="form-control" value="pune" required />
                 </div>
                 <div class="form-group">
                     <label for="password">Пароль</label>
-                    <input type="password" id="password" name="password" class="form-control" value="123" required>
+                    <input type="password" id="password" name="password" class="form-control" value="123321!!" required>
                 </div>
                 <div class="form-group">
                     <input type="submit" id="submit" name="submit" class="btn btn-primary" value="Войти">
