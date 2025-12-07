@@ -17,6 +17,11 @@
                 <option value="1H">1 Hour</option>
                 <option value="1D">1 Day</option>
             </select>
+            <select name="is_private">
+                <option value="public">Public</option>
+                <option value="unlisted">Unlisted</option>
+                <option value="private" selected>Private</option>
+            </select>
             <div id='form-errors' class="form-errors">{{ form.non_field_errors }}</div>
             <input type="submit" id="btn-submit" class="btn submit" value="Submit">
         </div>

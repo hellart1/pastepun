@@ -3,7 +3,7 @@ from rest_framework.renderers import JSONRenderer
 
 from .models import Paste
 
-class SaveCurrentUserDefault(serializers.CurrentUserDefault):
+class SafeCurrentUserDefault(serializers.CurrentUserDefault):
     def __call__(self, serializer_field):
         user = super().__call__(serializer_field)
 
@@ -12,11 +12,11 @@ class SaveCurrentUserDefault(serializers.CurrentUserDefault):
 
 class PasteSerializer(serializers.ModelSerializer):
     download_url = serializers.SerializerMethodField()
-    user = serializers.HiddenField(default=SaveCurrentUserDefault())
+    owner = serializers.HiddenField(default=SafeCurrentUserDefault())
 
     class Meta:
         model = Paste
-        fields = ('hash', 'expiration_type', 'user', 'download_url')
+        fields = ('hash', 'expiration_type', 'is_private', 'owner', 'download_url')
 
     def get_download_url(self, obj):
         return self.context.get('download_url')
