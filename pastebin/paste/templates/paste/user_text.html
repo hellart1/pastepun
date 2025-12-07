@@ -4,7 +4,7 @@
 <div class="container">
     <div class="text-display">
         <h2 class="text-title">Ваш Paste</h2>
-        {% if user.is_authenticated %}
+        {% if user.is_authenticated and user == paste.owner %}
         <div class="text-btn">
             <a href="{% url 'edit_paste' hash %}">Edit</a>
         </div>

@@ -32,37 +32,26 @@ class Home(S3UtilsMixin, FormView):
             text=paste_text
         )
 
-        serializer = PasteSerializer(data={
-            'hash': self.paste_hash,
-            'expiration_type': form.cleaned_data['expiration'],
-            'is_private': form.cleaned_data['is_private']
-        }, context={'request': self.request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        Paste.objects.create(
+            hash=self.paste_hash,
+            expiration_type=form.cleaned_data['expiration'],
+            is_private=form.cleaned_data['is_private'],
+            owner=self.request.user if self.request.user.is_authenticated else None
+        )
 
         return super().form_valid(form)
 
 
-class UserText(DetailView):
+class UserText(S3UtilsMixin, DetailView):
     model = Paste
     template_name = "paste/user_text.html"
     context_object_name = 'paste'
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     try:
-    #         obj = Paste.objects.get(hash=self.kwargs.get('data'))
-    #     except Exception as e:
-    #         raise Http404
-    #
-    #     if obj.is_private == 'private' and request.user != obj.owner:
-    #         raise PermissionDenied
-    #
-    #     return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         obj = context['paste']
+        context['hash'] = self.kwargs.get('data')
         context['can_edit'] = (
             self.request.user.is_authenticated and
             obj.owner == self.request.user
@@ -70,31 +59,22 @@ class UserText(DetailView):
 
         return context
 
-    # def get_object(self, queryset=None):
-    #     try:
-    #         obj = Paste.objects.get(hash=self.kwargs.get('data'))
-    #     except Exception as e:
-    #         raise Http404
-    #
-    #     return obj
-
     def get_object(self, queryset=None):
-        endpoint = reverse('paste_api', kwargs={'hash': self.kwargs.get('data')})
-        print(endpoint)
         try:
-            response = requests.get(
-                self.request.build_absolute_uri(endpoint)
-            ).json()
-            print(response)
-
-            content = requests.get(response['download_url'])
-            if content.status_code == 200:
-                return content
-
+            paste = Paste.objects.get(hash=self.kwargs.get('data'))
         except Exception as e:
-            print(f'Ошибка: {e}')
+            print('не удалось получить объект')
             raise Http404
 
+        paste.text = self.get_object_from_s3(paste.hash)
+
+        if paste.is_expired:
+            raise Http404
+
+        if paste.is_private == 'private' and self.request.user != paste.owner:
+            raise PermissionDenied
+
+        return paste
 
 class EditPaste(LoginRequiredMixin, S3UtilsMixin, FormView):
     login_url = reverse_lazy('users:login')
