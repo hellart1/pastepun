@@ -23,5 +23,6 @@ from paste.views import ErrorView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls', namespace='users')),
-    path('', include('paste.urls'))
+    path('', include('paste.urls')),
 ]
+

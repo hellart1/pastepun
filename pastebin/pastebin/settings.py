@@ -30,6 +30,12 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+INTERNAL_IPS = ['127.0.0.1', ]
+import socket
+
+# tricks to have debug toolbar when developing with docker
+ip = socket.gethostbyname(socket.gethostname())
+INTERNAL_IPS += [ip[:-1] + '1']
 
 # Application definition
 
@@ -43,9 +49,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'paste',
     'users',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

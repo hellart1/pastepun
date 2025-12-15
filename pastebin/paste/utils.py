@@ -3,10 +3,11 @@ import os
 from datetime import timedelta, datetime
 
 import boto3
-import redis
+import django_redis
 from botocore.exceptions import ClientError
 from django.conf import settings
 from django.core.cache import cache
+from django.forms import model_to_dict
 from django.views.generic.detail import SingleObjectMixin
 from rest_framework.response import Response
 
@@ -73,6 +74,16 @@ class S3UtilsMixin(S3ConnectMixin):
             print("ошибка клиента")
             # logging.error(e)
             return None
+
+    def get_paste_cached(self, paste_hash):
+        key = f"paste: {paste_hash}"
+        data = cache.get(key)
+        if data:
+            return data
+        paste = Paste.objects.get(hash=paste_hash)
+        cache.set(key=f"paste: {paste_hash}", value=paste, timeout=600)
+
+        return paste
 
     def get_unique_hash(self):
         for attempts in range(100):

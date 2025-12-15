@@ -61,14 +61,16 @@ class UserText(S3UtilsMixin, DetailView):
 
     def get_object(self, queryset=None):
         try:
-            paste = Paste.objects.get(hash=self.kwargs.get('data'))
+            paste = self.get_paste_cached(self.kwargs.get('data'))
+            # paste = Paste.objects.get(hash=self.kwargs.get('data'))
         except Exception as e:
-            print('не удалось получить объект')
+            print('не удалось получить объект', e)
             raise Http404
 
         paste.text = self.get_object_from_s3(paste.hash)
 
         if paste.is_expired:
+            print('паста срок жизни')
             raise Http404
 
         if paste.is_private == 'private' and self.request.user != paste.owner:
