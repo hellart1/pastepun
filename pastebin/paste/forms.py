@@ -5,6 +5,6 @@ from django.contrib.auth.forms import UserCreationForm
 class TextForm(forms.Form):
     paste_text = forms.CharField()
     expiration = forms.CharField()
-    is_private = forms.CharField()
+    visibility = forms.CharField()
 
 

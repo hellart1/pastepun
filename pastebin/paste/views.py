@@ -35,7 +35,7 @@ class Home(S3UtilsMixin, FormView):
         Paste.objects.create(
             hash=self.paste_hash,
             expiration_type=form.cleaned_data['expiration'],
-            is_private=form.cleaned_data['is_private'],
+            is_private=form.cleaned_data['visibility'],
             owner=self.request.user if self.request.user.is_authenticated else None
         )
 
@@ -44,7 +44,7 @@ class Home(S3UtilsMixin, FormView):
 
 class UserText(S3UtilsMixin, DetailView):
     model = Paste
-    template_name = "paste/user_text.html"
+    template_name = "paste/paste_detail.html"
     context_object_name = 'paste'
 
     def get_context_data(self, **kwargs):
@@ -62,7 +62,6 @@ class UserText(S3UtilsMixin, DetailView):
     def get_object(self, queryset=None):
         try:
             paste = self.get_paste_cached(self.kwargs.get('data'))
-            # paste = Paste.objects.get(hash=self.kwargs.get('data'))
         except Exception as e:
             print('не удалось получить объект', e)
             raise Http404
@@ -81,7 +80,7 @@ class UserText(S3UtilsMixin, DetailView):
 class EditPaste(LoginRequiredMixin, S3UtilsMixin, FormView):
     login_url = reverse_lazy('users:login')
     form_class = TextForm
-    template_name = 'paste/edit_paste.html'
+    template_name = 'paste/paste_edit.html'
     context_object_name = 'data'
 
     def dispatch(self, request, *args, **kwargs):

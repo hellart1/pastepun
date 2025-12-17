@@ -1,0 +1,116 @@
+/* --- Buttons --- */
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    text-align: center;
+}
+
+.btn.auth {
+    background-color: #3e4b57;
+    color: white;
+}
+.btn.auth:hover { background-color: #4e5d6a; }
+
+.btn.reg {
+    background-color: #4db8ff;
+    color: #111;
+}
+.btn.reg:hover { background-color: #7bcfff; }
+
+.btn.submit {
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 1rem;
+    padding: 10px 25px;
+}
+.btn.submit:hover { opacity: 0.9; }
+
+.btn.theme-toggle {
+    background-color: var(--theme-btn-bg);
+    color: var(--theme-btn-text);
+}
+
+/* --- Forms & Inputs --- */
+.form-group {
+    background-color: var(--bg-container);
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+textarea.paste_text {
+    width: 100%;
+    min-height: 400px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    padding: 10px;
+    background-color: var(--code-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    resize: vertical;
+    outline: none;
+    line-height: 1.5;
+}
+
+textarea.paste_text:focus {
+    border-color: #4db8ff;
+    box-shadow: 0 0 0 2px rgba(77, 184, 255, 0.2);
+}
+
+.form-header {
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.form-title-main {
+    font-size: 1.5rem;
+}
+
+.form-settings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+    align-items: center;
+}
+
+.setting-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.setting-item label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--text-muted);
+}
+
+select {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    min-width: 150px;
+}
+
+.submit-button-wrap {
+    margin-left: auto;
+}
+
+.form-errors {
+    color: #e74c3c;
+    margin-top: 10px;
+    font-weight: bold;
+}

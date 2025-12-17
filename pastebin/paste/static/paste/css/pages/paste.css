@@ -1,0 +1,68 @@
+.paste-box {
+    background: var(--bg-container);
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.paste-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+body.dark-theme .paste-header {
+    background-color: #2c2c2c;
+}
+
+.paste-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.code-view {
+    display: table;
+    width: 100%;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    background-color: var(--code-bg);
+    border-collapse: collapse;
+}
+
+.line-row {
+    display: table-row;
+}
+
+.line-num {
+    display: table-cell;
+    width: 50px;
+    text-align: right;
+    padding: 0 10px;
+    background-color: var(--code-num-bg);
+    color: var(--code-num-text);
+    border-right: 1px solid var(--border-color);
+    user-select: none;
+    vertical-align: top;
+}
+
+.line-code {
+    display: table-cell;
+    padding-left: 15px;
+    color: var(--text-main);
+    white-space: pre-wrap;
+    word-break: break-all;
+    vertical-align: top;
+}
+
+.line-row:hover .line-code {
+    background-color: rgba(0,0,0,0.02);
+}
+body.dark-theme .line-row:hover .line-code {
+    background-color: rgba(255,255,255,0.02);
+}
+.raw-content-hidden {
+display: none;
+}

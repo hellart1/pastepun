@@ -1,35 +1,12 @@
-{% extends 'paste/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
-<div class="form-group">
-    {% block form %}
-    {% endblock %}
-    <form method="post">
-        {% csrf_token %}
-<!--        <p><input type='text' id="paste_text" name="paste_text" placeholder="Enter your text here..." required ></p>-->
-        <p><textarea id="paste_text" name="paste_text" placeholder="Enter your text here..." required></textarea></p>
-        <div class="form-btn">
-            <select name="expiration" id="PostForm[expiration]">
-                <option value="N">Never</option>
-                <option value="B">Burn after read</option>
-                <option value="10M" selected>10 Minutes</option>
-                <option value="1H">1 Hour</option>
-                <option value="1D">1 Day</option>
-            </select>
-            <select name="is_private">
-                <option value="public" selected>Public</option>
-                <option value="unlisted">Unlisted</option>
-                {% if user.is_authenticated %}
-                <option value="private">Private</option>
-                {% else %}
-                <option value="private" disabled>Private</option>
-                {% endif %}
-            </select>
-            <div id='form-errors' class="form-errors">{{ form.non_field_errors }}</div>
-            <input type="submit" id="btn-submit" class="btn submit" value="Submit">
-        </div>
-    </form>
-</div>
-<script src="{% static 'paste/js/script.js' %}"></script>
+
+{% include 'paste/partials/paste_form.html' %}
+
+{% block page_js %}
+<script src="{% static 'paste/js/paste_form.js' %}"></script>
+{% endblock %}
+
 {% endblock %}

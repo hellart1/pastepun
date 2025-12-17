@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{% static 'paste/css/pages/paste.css' %}">
+{% endblock %}
+
+{% block title %}Edit Paste - Pastepun{% endblock %}
+
+{% block content %}
+
+<p>Edit Paste: {{ hash }}</p>
+
+{% include 'paste/partials/paste_form.html' %}
+<!-- with initial text -->
+
+{% block page_js %}
+<script src="{% static 'paste/js/paste_form.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

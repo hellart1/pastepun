@@ -1,20 +1,42 @@
-{% extends 'paste/base.html' %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up - Pastepun{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{% static 'paste/css/pages/auth.css' %}">
+{% endblock %}
 
 {% block content %}
-        <div class="form-group">
-            <h2>Регистрация</h2>
-            <form action="" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ next }}">
-                <div class="form-error">{{ form.non_field_errors }}</div>
-                {% for f in form %}
-                <div class="form-group">
-                    <p><label class='form-label' for="{{ f.id_for_label }}">{{f.label}}</label></p>{{f}}
-                    <div class="form-error">{{ f.errors }}</div>
-                </div>
-                {% endfor %}
-                <input type="submit" name="submit" class="btn" value="Зарегистрироваться">
-                <p>Уже зарегистрированы? <a href="{% url 'users:login' %}">Войдите в систему</a>.</p>
-            </form>
+<div class="auth-container">
+    <h2 class="auth-title">Регистрация</h2>
+    <p class="auth-subtitle">Станьте частью Pastepun.</p>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        
+        {% if form.non_field_errors %}
+            <div class="form-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        {% for field in form %}
+        <div class="auth-form-group">
+            <label for="{{ f.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <div class="form-error">{{ field.errors }}</div>
+            {% endif %}
         </div>
+        {% endfor %}
+
+        <div class="auth-form-group">
+            <input type="submit" class="btn submit" value="Зарегистрироваться">
+        </div>
+    </form>
+
+    <div class="auth-footer">
+        Уже зарегистрированы? <a href="{% url 'users:login' %}">Войдите в систему</a>.
+    </div>
+</div>
 {% endblock %}

@@ -1,0 +1,55 @@
+:root {
+    --bg-body: #F1F1F1;
+    --bg-container: #FFFFFF;
+    --text-main: #333333;
+    --text-muted: #666666;
+    --border-color: #DDDDDD;
+    --primary-color: #023644;
+    --accent-color: #2c3e50;
+    --code-bg: #FFFFFF;
+    --code-num-bg: #F7F7F7;
+    --code-num-text: #999999;
+    --code-selection: #d6d6d6;
+    --theme-btn-bg: #f1c40f;
+    --theme-btn-text: #333;
+}
+
+html.dark-theme {
+    --bg-body: #181818;
+    --bg-container: #222222;
+    --text-main: #E0E0E0;
+    --text-muted: #AAAAAA;
+    --border-color: #333333;
+    --primary-color: #023644;
+    --accent-color: #34495e;
+    --code-bg: #222222;
+    --code-num-bg: #2C2C2C;
+    --code-num-text: #666666;
+    --code-selection: #444444;
+    --theme-btn-bg: #34495e;
+    --theme-btn-text: #fff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    transition: background-color 0.2s ease;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul, ol {
+    list-style: none;
+}

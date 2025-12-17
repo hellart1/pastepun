@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Paste {{ hash }} - Pastepun{% endblock %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{% static 'paste/css/pages/paste.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="paste-box">
+    <div class="paste-header">
+        <div class="paste-title">
+            Paste: {{ hash }}
+        </div>
+        
+        <div class="paste-actions">
+            {% if user.is_authenticated and user == paste.owner %}
+                <a href="{% url 'edit_paste' hash %}" class="btn">EDIT</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="code-container" class="code-view"></div>
+
+    <textarea id="raw-paste-content" class="raw-content-hidden">{{ paste.text }}</textarea>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script src="{% static 'paste/js/paste_detail.js' %}"></script>
+{% endblock %}

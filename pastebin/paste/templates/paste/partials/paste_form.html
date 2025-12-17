@@ -1,0 +1,47 @@
+<div class="form-group">
+    <div class="form-header">
+        <h2 class="form-title-main">New Paste</h2>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+
+        <textarea id="paste_text" class="paste_text" name="paste_text" placeholder="Paste your code here..." required></textarea>
+
+        <div class="form-settings">
+            
+            <div class="setting-item">
+                <label for="expiration">Paste Expiration:</label>
+                <select id='expiration' name="expiration">
+                    <option value="N">Never</option>
+                    <option value="B">Burn after reading</option>
+                    <option value="10M" selected>10 Minutes</option>
+                    <option value="1H">1 Hour</option>
+                    <option value="1D">1 Day</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <label for="visibility">Paste Exposure:</label>
+                <select id='visibility' name="visibility">
+                    <option value="public" selected>Public</option>
+                    <option value="unlisted">Unlisted</option>
+                    {% if user.is_authenticated %}
+                    <option value="private">Private</option>
+                    {% else %}
+                    <option value="private" disabled title="Login required">Private (Login required)</option>
+                    {% endif %}
+                </select>
+            </div>
+
+            <div class="submit-button-wrap">
+                <input type="submit" id="btn-submit" class="btn submit" value="Create New Paste">
+            </div>
+        </div>
+
+        <div id="form-errors" class="form-errors">
+            {{ form.non_field_errors }}
+        </div>
+
+    </form>
+</div>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    {% block head %}
+    <meta charset="UTF-8">
+    <title>{% block title %}Pastepun{% endblock %}</title>
+
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+        })();
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'paste/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'paste/css/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'paste/css/components.css' %}">
+    <link rel="icon" href="{% static 'paste/images/favicon.ico' %}">
+    {% endblock %}
+    {% block page_css %}{% endblock %}
+</head>
+<body>
+    {% include 'paste/partials/header.html' %}
+
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% block page_js %}{% endblock %}
+
+    <script src="{% static 'paste/js/theme_toggle.js' %}"></script>
+</body>
+</html>
