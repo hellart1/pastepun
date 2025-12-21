@@ -6,7 +6,7 @@
     <form method="post">
         {% csrf_token %}
 
-        <textarea id="paste_text" class="paste_text" name="paste_text" placeholder="Paste your code here..." required></textarea>
+        <textarea id="paste_text" class="paste_text" name="paste_text" placeholder="Paste your code here..." required>{{ initial_text|default_if_none:"" }}</textarea>
 
         <div class="form-settings">
             
