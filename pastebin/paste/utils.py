@@ -48,13 +48,35 @@ class S3UtilsMixin(S3ConnectMixin):
             print(f"Ошибка: {e}")
             return None
 
-    def get_object_from_s3(self, object_name, client=None, bucket_name=settings.AWS_STORAGE_BUCKET_NAME):
+    def get_text_from_object_in_s3(self, object_name, client=None, bucket_name=settings.AWS_STORAGE_BUCKET_NAME):
         client = client or self.s3_client()
 
         response = client.get_object(Bucket=bucket_name, Key=f'{object_name}.txt')
         content = response['Body'].read().decode('utf-8')
 
         return content
+
+    def get_object_size_from_s3(self, object_name, client=None, bucket_name=settings.AWS_STORAGE_BUCKET_NAME):
+        client = client or self.s3_client()
+
+        response = client.head_object(Bucket=bucket_name, Key=f'{object_name}.txt')
+
+        return response['ContentLength']
+
+    def get_or_set_cached_text(self, object_name, max_size=50000, client=None, bucket_name=settings.AWS_STORAGE_BUCKET_NAME):
+        key = f"paste_text {object_name}"
+        data = cache.get(key)
+        if data:
+            return data
+
+        client = client or self.s3_client()
+
+        size = self.get_object_size_from_s3(object_name, client=client)
+        paste = self.get_text_from_object_in_s3(object_name, client=client)
+        if size < max_size:
+            cache.set(key=key, value=paste, timeout=600)
+
+        return paste
 
 
     def create_presigned_url(
@@ -75,15 +97,17 @@ class S3UtilsMixin(S3ConnectMixin):
             # logging.error(e)
             return None
 
-    def get_paste_cached(self, paste_hash):
-        key = f"paste: {paste_hash}"
+    def get_or_set_paste_cached(self, paste_hash):
+        key = f"paste {paste_hash}"
         data = cache.get(key)
         if data:
             return data
         paste = Paste.objects.get(hash=paste_hash)
-        cache.set(key=f"paste: {paste_hash}", value=paste, timeout=600)
+        cache.set(key=f"paste {paste_hash}", value=paste, timeout=600)
 
         return paste
+
+
 
     def get_unique_hash(self):
         for attempts in range(100):

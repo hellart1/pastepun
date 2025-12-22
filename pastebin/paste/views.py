@@ -61,12 +61,12 @@ class UserText(S3UtilsMixin, DetailView):
 
     def get_object(self, queryset=None):
         try:
-            paste = self.get_paste_cached(self.kwargs.get('data'))
+            paste = self.get_or_set_paste_cached(self.kwargs.get('data'))
         except Exception as e:
             print('не удалось получить объект', e)
             raise Http404
 
-        paste.text = self.get_object_from_s3(paste.hash)
+        paste.text = self.get_text_from_object_in_s3(paste.hash)
 
         if paste.is_expired:
             print('паста срок жизни')
@@ -85,7 +85,7 @@ class EditPaste(LoginRequiredMixin, S3UtilsMixin, FormView):
 
     def dispatch(self, request, *args, **kwargs):
         try:
-            obj = Paste.objects.get(hash=self.kwargs.get('data'))
+            obj = self.get_or_set_paste_cached(paste_hash=self.kwargs.get('data'))
         except Exception as e:
             raise Http404
 
@@ -100,6 +100,7 @@ class EditPaste(LoginRequiredMixin, S3UtilsMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['hash'] = self.kwargs.get('data')
+        context['orig_text'] = self.get_or_set_cached_text(context['hash'])
 
         return context
 
