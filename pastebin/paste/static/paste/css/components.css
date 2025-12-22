@@ -31,11 +31,6 @@
 }
 .btn.submit:hover { opacity: 0.9; }
 
-.btn.theme-toggle {
-    background-color: var(--theme-btn-bg);
-    color: var(--theme-btn-text);
-}
-
 /* --- Forms & Inputs --- */
 .form-group {
     background-color: var(--bg-container);

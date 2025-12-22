@@ -1,19 +1,23 @@
-function checkTextLength(event) {
-    const maxChar = 200000
-    const formNode = event.target.value
-    const button = document.getElementById('btn-submit')
-    const formErrors = document.getElementById('form-errors')
-    
-    if (formNode.length > maxChar) {
-        button.disabled = true
-        formErrors.textContent = `Превышен лимит на ${formNode.length - maxChar} символов`
-    }
-    else {
-        button.disabled = false
-        formErrors.textContent = ''
-    }
-}
+(function() {
+    var pasteText = document.getElementById('paste_text');
+    var maxChar = 200000;
 
-const text = document.getElementById('paste_text');
+    function checkTextLength(event) {
+        var formNode = event.target.value;
+        var button = document.getElementById('btn-submit');
+        var formErrors = document.getElementById('form-errors');
 
-text.addEventListener('input', checkTextLength);
+        if (formNode.length > maxChar) {
+            button.disabled = true;
+            formErrors.textContent = `Превышен лимит на ${formNode.length - maxChar} символов`;
+        } else {
+            button.disabled = false;
+            formErrors.textContent = '';
+        }
+    }
+
+    if (!pasteText.__listenerAttached) {
+        pasteText.addEventListener('input', checkTextLength);
+        pasteText.__listenerAttached = true;
+    }
+})();
