@@ -21,7 +21,7 @@ class Home(S3UtilsMixin, FormView):
     context_object_name = "content"
 
     def get_success_url(self):
-        return reverse_lazy('user_text', kwargs={'data': self.paste_hash})
+        return reverse_lazy('paste_detail', kwargs={'data': self.paste_hash})
 
     def form_valid(self, form):
         paste_text = form.cleaned_data['paste_text']
@@ -42,7 +42,7 @@ class Home(S3UtilsMixin, FormView):
         return super().form_valid(form)
 
 
-class UserText(S3UtilsMixin, DetailView):
+class PasteDetail(S3UtilsMixin, DetailView):
     model = Paste
     template_name = "paste/paste_detail.html"
     context_object_name = 'paste'
@@ -95,7 +95,7 @@ class EditPaste(LoginRequiredMixin, S3UtilsMixin, FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse_lazy('user_text', kwargs={'data': self.kwargs.get('data')})
+        return reverse_lazy('paste_detail', kwargs={'data': self.kwargs.get('data')})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
