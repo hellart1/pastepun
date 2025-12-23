@@ -2,7 +2,7 @@ services:
 
   backend:
     image: pastepun
-    restart: always
+    restart: unless-stopped
     build: .
     depends_on:
       db:
@@ -20,7 +20,7 @@ services:
 
   db:
     image: mysql:8.0
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
@@ -36,7 +36,7 @@ services:
 
   redis:
     image: redis:7.2
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s

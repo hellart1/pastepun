@@ -10,8 +10,7 @@ from rest_framework.response import Response
 
 from .forms import TextForm
 from .models import Paste
-from .serializers import PasteSerializer
-from .utils import S3UtilsMixin, PasteExpirationMixin
+from .utils import S3UtilsMixin
 
 
 class Home(S3UtilsMixin, FormView):
@@ -113,23 +112,6 @@ class EditPaste(LoginRequiredMixin, S3UtilsMixin, FormView):
         )
 
         return super().form_valid(form)
-
-
-class PasteAPIList(PasteExpirationMixin, generics.RetrieveAPIView):
-    queryset = Paste.objects.all()
-    serializer_class = PasteSerializer
-    lookup_field = 'hash'
-
-    def retrieve(self, request, *args, **kwargs):
-        obj = self.get_object()
-        presigned_url = self.expiration_handler(obj)
-        serializer = self.get_serializer_class()(obj, context={
-            'download_url': presigned_url,
-            'request': request
-        })
-
-        return Response(serializer.data)
-
 
 class ErrorView(TemplateView):
     template_name = 'error.html'

@@ -5,7 +5,6 @@ from django.conf import settings
 
 urlpatterns = [
     path('', Home.as_view(), name='home'),
-    path('api/paste/<str:hash>/', PasteAPIList.as_view(), name='paste_api'),
     path('edit/<str:data>', EditPaste.as_view(), name='edit_paste'),
     path('<str:data>', PasteDetail.as_view(), name='paste_detail'),
 ]

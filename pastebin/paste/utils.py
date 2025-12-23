@@ -78,25 +78,6 @@ class S3UtilsMixin(S3ConnectMixin):
 
         return paste
 
-
-    def create_presigned_url(
-            self, object_name, expiration=None, client=None, bucket_name=settings.AWS_STORAGE_BUCKET_NAME
-    ):
-        client = client or self.s3_client()
-        print(client)
-        print(object_name)
-        try:
-            return client.generate_presigned_url(
-                ClientMethod='get_object',
-                Params={'Bucket': bucket_name, 'Key': f"{object_name}.txt"},
-                ExpiresIn=expiration
-            )
-
-        except ClientError as e:
-            print("ошибка клиента")
-            # logging.error(e)
-            return None
-
     def get_or_set_paste_cached(self, paste_hash):
         key = f"paste {paste_hash}"
         data = cache.get(key)
@@ -106,7 +87,6 @@ class S3UtilsMixin(S3ConnectMixin):
         cache.set(key=f"paste {paste_hash}", value=paste, timeout=600)
 
         return paste
-
 
 
     def get_unique_hash(self):
@@ -120,61 +100,3 @@ class S3UtilsMixin(S3ConnectMixin):
                 return _hash
 
         raise ValueError("Не удалось найти уникальный хэш. Повторите позже")
-
-
-class PasteExpirationMixin(S3UtilsMixin):
-    def get_or_set_cache(self, obj, expiration_type=None):
-        try:
-            key = obj.hash
-            raw = cache.get(key)
-            if raw is not None:
-                return raw
-            url = self.create_presigned_url(
-                object_name=obj.hash,
-                expiration=expiration_type
-            )
-            cache.set(key, url, timeout=30)
-            print(f"Ключи: {cache.client.get_client().keys('*')}")
-            print(f"Ссылка: {url}")
-            return url
-        except Exception as e:
-            print('ошибка кэширования:', e)
-
-    def expiration_handler(self, obj):
-        handlers = {
-            'N': self.handler_never_expire,
-            'B': self.handler_burn_after_read,
-            '10M': self.handler_timed_expire,
-            '1H': self.handler_timed_expire,
-            '1D': self.handler_timed_expire
-        }
-
-        handler = handlers.get(obj.expiration_type)
-        if handler:
-            return handler(obj)
-
-    def handler_never_expire(self, obj):
-        return self.get_or_set_cache(obj)
-
-    def handler_burn_after_read(self, obj):
-        # идея выдавать ссылку и при открытии ее обнулять (каким образом?) (счетчик?)
-        pass
-
-    def handler_timed_expire(self, obj):
-        expiration_delta = {
-            '10M': timedelta(minutes=10),
-            '1H': timedelta(hours=1),
-            '1D': timedelta(days=1),
-        }
-
-        expiration = expiration_delta[obj.expiration_type].total_seconds()
-
-        time_now = datetime.now().timestamp()
-        created_time = obj.created_at.timestamp()
-
-        if time_now < (created_time + expiration):
-            lifespan_remain = created_time + expiration - time_now
-            return self.get_or_set_cache(obj, lifespan_remain)
-        else:
-            print('Срок действия пасты истек')
-
