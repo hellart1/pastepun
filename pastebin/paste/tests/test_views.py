@@ -3,7 +3,6 @@ from django.shortcuts import reverse
 
 
 class TestHomePage(TestCase):
-
     def test_homepage_status_code(self):
         response = self.client.get(reverse('home'))
 

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from paste.models import Paste
+from ..models import Paste
 
 
 class PasteTestCase(TestCase):
