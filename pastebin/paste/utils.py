@@ -78,7 +78,7 @@ class S3UtilsMixin(S3ConnectMixin):
 
         return paste
 
-    def get_or_set_paste_cached(self, paste_hash):
+    def get_or_set_cached_paste(self, paste_hash):
         key = f"paste {paste_hash}"
         data = cache.get(key)
         if data:
@@ -88,6 +88,15 @@ class S3UtilsMixin(S3ConnectMixin):
 
         return paste
 
+    def get_user_id_or_session_key(self, request):
+        if request.user.is_authenticated:
+            return f"user_id:{request.user.id}"
+        else:
+            if not request.session.session_key:
+                request.session.create()
+            session_key = request.session.session_key
+
+            return f"session_key:{session_key}"
 
     def get_unique_hash(self):
         for attempts in range(100):
@@ -100,3 +109,69 @@ class S3UtilsMixin(S3ConnectMixin):
                 return _hash
 
         raise ValueError("Не удалось найти уникальный хэш. Повторите позже")
+
+class CacheConnect:
+    def get_redis_connection(self):
+        return django_redis.get_redis_connection()
+
+class CacheMethods(CacheConnect):
+    # def get_or_set_cached_text(self, object_name, max_size=50000, client=None, bucket_name=settings.AWS_STORAGE_BUCKET_NAME):
+    #     key = f"paste_text {object_name}"
+    #     data = cache.get(key)
+    #     if data:
+    #         return data
+    #
+    #     client = client or self.s3_client()
+    #
+    #     size = self.get_object_size_from_s3(object_name, client=client)
+    #     paste = self.get_text_from_object_in_s3(object_name, client=client)
+    #     if size < max_size:
+    #         cache.set(key=key, value=paste, timeout=600)
+    #
+    #     return paste
+    #
+    # def get_or_set_cached_paste(self, paste_hash):
+    #     key = f"paste {paste_hash}"
+    #     data = cache.get(key)
+    #     if data:
+    #         return data
+    #     paste = Paste.objects.get(hash=paste_hash)
+    #     cache.set(key=f"paste {paste_hash}", value=paste, timeout=600)
+    #
+    #     return paste
+    #
+    # def get_user_id_or_session_key(self, request):
+    #     if request.user.is_authenticated:
+    #         return f"user_id:{request.user.id}"
+    #     else:
+    #         if not request.session.session_key:
+    #             request.session.create()
+    #         session_key = request.session.session_key
+    #
+    #         return f"session_key:{session_key}"
+
+    def get_user_id_or_session_key(self, request):
+        if request.user.is_authenticated:
+            return f"user_id:{request.user.id}"
+        else:
+            if not request.session.session_key:
+                request.session.create()
+            session_key = request.session.session_key
+
+            return f"session_key:{session_key}"
+
+
+    def increment_paste_views_in_cache(self, request, paste_hash):
+        redis = self.get_redis_connection()
+        viewers = self.get_user_id_or_session_key(request)
+        redis_key = f"paste:{paste_hash}:{viewers}"
+
+        created = redis.set(
+            redis_key,
+            1,
+            nx=True,
+            ex=3600
+        )
+
+        if created:
+            redis.incr(f"paste:{paste_hash}:views")

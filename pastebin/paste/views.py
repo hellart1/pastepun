@@ -1,16 +1,17 @@
 import requests
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.http import Http404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import FormView, DetailView, TemplateView
 from rest_framework import generics
-from rest_framework.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied
 from rest_framework.response import Response
 
 from .forms import TextForm
 from .models import Paste
-from .utils import S3UtilsMixin
+from .utils import S3UtilsMixin, CacheMethods
 
 
 class Home(S3UtilsMixin, FormView):
@@ -41,7 +42,7 @@ class Home(S3UtilsMixin, FormView):
         return super().form_valid(form)
 
 
-class PasteDetail(S3UtilsMixin, DetailView):
+class PasteDetail(S3UtilsMixin, CacheMethods, DetailView):
     model = Paste
     template_name = "paste/paste_detail.html"
     context_object_name = 'paste'
@@ -60,19 +61,20 @@ class PasteDetail(S3UtilsMixin, DetailView):
 
     def get_object(self, queryset=None):
         try:
-            paste = self.get_or_set_paste_cached(self.kwargs.get('data'))
-        except Exception as e:
-            print('не удалось получить объект', e)
-            raise Http404
-
-        paste.text = self.get_text_from_object_in_s3(paste.hash)
-
-        if paste.is_expired:
-            print('паста срок жизни')
+            paste = self.get_or_set_cached_paste(self.kwargs.get('data'))
+        except Paste.DoesNotExist:
             raise Http404
 
         if paste.is_private == 'private' and self.request.user != paste.owner:
             raise PermissionDenied
+
+        paste.text = self.get_text_from_object_in_s3(paste.hash)
+
+        self.increment_paste_views_in_cache(self.request, paste.hash)
+
+        if paste.is_expired:
+            print('паста срок жизни')
+            raise Http404
 
         return paste
 
@@ -84,7 +86,7 @@ class EditPaste(LoginRequiredMixin, S3UtilsMixin, FormView):
 
     def dispatch(self, request, *args, **kwargs):
         try:
-            obj = self.get_or_set_paste_cached(paste_hash=self.kwargs.get('data'))
+            obj = self.get_or_set_cached_paste(paste_hash=self.kwargs.get('data'))
         except Exception as e:
             raise Http404
 

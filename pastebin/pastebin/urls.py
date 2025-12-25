@@ -26,3 +26,4 @@ urlpatterns = [
     path('', include('paste.urls')),
 ]
 
+handler403 = ErrorView.as_view(extra_context={'status_code': 403})
