@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from .forms import TextForm
 from .models import Paste
 from .utils import S3UtilsMixin, CacheMethods
+from .tasks import update_counter_of_views
 
 
 class Home(S3UtilsMixin, FormView):
@@ -71,6 +72,7 @@ class PasteDetail(S3UtilsMixin, CacheMethods, DetailView):
         paste.text = self.get_text_from_object_in_s3(paste.hash)
 
         self.increment_paste_views_in_cache(self.request, paste.hash)
+        update_counter_of_views.delay(paste.hash)
 
         if paste.is_expired:
             print('паста срок жизни')

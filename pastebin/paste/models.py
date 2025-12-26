@@ -17,7 +17,7 @@ class Paste(models.Model):
     expiration_type = models.CharField(max_length=15, default='N')
     created_at = models.DateTimeField(auto_now_add=True)
     is_private = models.CharField(max_length=10, default='public')
-    views = models.IntegerField(blank=True, null=True)
+    views = models.IntegerField(default=0)
 
     @property
     def is_expired(self):

@@ -175,12 +175,11 @@ REST_FRAMEWORK = {
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': f'redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/1',
+        'LOCATION': f'redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0',
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
 
-
-
+CELERY_BROKER_URL=f'redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0'
