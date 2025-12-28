@@ -84,7 +84,7 @@ class S3UtilsMixin(S3ConnectMixin):
         if data:
             return data
         paste = Paste.objects.get(hash=paste_hash)
-        cache.set(key=f"paste {paste_hash}", value=paste, timeout=600)
+        cache.set(key=f"paste {paste_hash}", value=paste, timeout=10)
 
         return paste
 
@@ -164,7 +164,7 @@ class CacheMethods(CacheConnect):
     def increment_paste_views_in_cache(self, request, paste_hash):
         redis = self.get_redis_connection()
         viewers = self.get_user_id_or_session_key(request)
-        redis_key = f"paste:{paste_hash}:{viewers}"
+        redis_key = f"paste:{paste_hash}:viewer:{viewers}"
 
         created = redis.set(
             redis_key,
@@ -174,4 +174,4 @@ class CacheMethods(CacheConnect):
         )
 
         if created:
-            redis.incr(f"paste:{paste_hash}:views")
+            redis.incr(f"paste:{paste_hash}:views_pending")

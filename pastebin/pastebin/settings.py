@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'paste',
     'users',
     'debug_toolbar',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [

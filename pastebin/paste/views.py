@@ -5,6 +5,7 @@ from django.core.cache import cache
 from django.http import Http404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import FormView, DetailView, TemplateView
+from django_redis import get_redis_connection
 from rest_framework import generics
 from django.core.exceptions import PermissionDenied
 from rest_framework.response import Response
@@ -12,7 +13,7 @@ from rest_framework.response import Response
 from .forms import TextForm
 from .models import Paste
 from .utils import S3UtilsMixin, CacheMethods
-from .tasks import update_counter_of_views
+from .tasks import flush_paste_views
 
 
 class Home(S3UtilsMixin, FormView):
@@ -52,6 +53,12 @@ class PasteDetail(S3UtilsMixin, CacheMethods, DetailView):
         context = super().get_context_data(**kwargs)
 
         obj = context['paste']
+
+        redis = get_redis_connection()
+        total = redis.get(f"paste:{obj.hash}:views_total")
+        pending = redis.get(f"paste:{obj.hash}:views_pending")
+
+        context['views'] = int(total) + int(pending)
         context['hash'] = self.kwargs.get('data')
         context['can_edit'] = (
             self.request.user.is_authenticated and
@@ -72,7 +79,7 @@ class PasteDetail(S3UtilsMixin, CacheMethods, DetailView):
         paste.text = self.get_text_from_object_in_s3(paste.hash)
 
         self.increment_paste_views_in_cache(self.request, paste.hash)
-        update_counter_of_views.delay(paste.hash)
+        flush_paste_views.delay()
 
         if paste.is_expired:
             print('паста срок жизни')
