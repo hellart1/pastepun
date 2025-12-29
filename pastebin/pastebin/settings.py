@@ -179,8 +179,17 @@ CACHES = {
         'LOCATION': f'redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0',
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "DECODE_RESPONSES": True,
         }
     }
 }
 
 CELERY_BROKER_URL=f'redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0'
+
+CELERY_BEAT_SCHEDULE = {
+    "flush-paste-views": {
+        "task": "paste.tasks.flush_paste_views",
+        # 5 on prod
+        "schedule": 60.0,
+    },
+}

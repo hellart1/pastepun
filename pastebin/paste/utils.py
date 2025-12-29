@@ -64,7 +64,7 @@ class S3UtilsMixin(S3ConnectMixin):
         return response['ContentLength']
 
     def get_or_set_cached_text(self, object_name, max_size=50000, client=None, bucket_name=settings.AWS_STORAGE_BUCKET_NAME):
-        key = f"paste_text {object_name}"
+        key = f"cache:paste{object_name}:text"
         data = cache.get(key)
         if data:
             return data
@@ -79,12 +79,12 @@ class S3UtilsMixin(S3ConnectMixin):
         return paste
 
     def get_or_set_cached_paste(self, paste_hash):
-        key = f"paste {paste_hash}"
+        key = f"cache:paste:{paste_hash}"
         data = cache.get(key)
         if data:
             return data
         paste = Paste.objects.get(hash=paste_hash)
-        cache.set(key=f"paste {paste_hash}", value=paste, timeout=10)
+        cache.set(key=f"cache:paste:{paste_hash}", value=paste, timeout=600)
 
         return paste
 
@@ -164,7 +164,7 @@ class CacheMethods(CacheConnect):
     def increment_paste_views_in_cache(self, request, paste_hash):
         redis = self.get_redis_connection()
         viewers = self.get_user_id_or_session_key(request)
-        redis_key = f"paste:{paste_hash}:viewer:{viewers}"
+        redis_key = f"views:paste:{paste_hash}:viewer:{viewers}"
 
         created = redis.set(
             redis_key,
@@ -174,4 +174,4 @@ class CacheMethods(CacheConnect):
         )
 
         if created:
-            redis.incr(f"paste:{paste_hash}:views_pending")
+            redis.incr(f"counter:paste:{paste_hash}:views_pending")

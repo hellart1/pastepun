@@ -55,10 +55,10 @@ class PasteDetail(S3UtilsMixin, CacheMethods, DetailView):
         obj = context['paste']
 
         redis = get_redis_connection()
-        total = redis.get(f"paste:{obj.hash}:views_total")
-        pending = redis.get(f"paste:{obj.hash}:views_pending")
+        total = redis.get(f"counter:paste:{obj.hash}:views_total")
+        pending = redis.get(f"counter:paste:{obj.hash}:views_pending")
 
-        context['views'] = int(total) + int(pending)
+        context['views'] = int(total or 0) + int(pending or 0)
         context['hash'] = self.kwargs.get('data')
         context['can_edit'] = (
             self.request.user.is_authenticated and
@@ -79,7 +79,6 @@ class PasteDetail(S3UtilsMixin, CacheMethods, DetailView):
         paste.text = self.get_text_from_object_in_s3(paste.hash)
 
         self.increment_paste_views_in_cache(self.request, paste.hash)
-        flush_paste_views.delay()
 
         if paste.is_expired:
             print('паста срок жизни')

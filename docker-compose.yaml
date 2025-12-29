@@ -1,17 +1,14 @@
-services:
+version: "3.9"
 
+services:
   backend:
-    image: pastepun
-    restart: unless-stopped
     build: .
+    restart: unless-stopped
     depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - db
+      - redis
     ports:
       - "8000:8000"
-    # сделать environment: со всеми ключами через vault или наподобие
     environment:
       DATABASE_URL: mysql://${DB_USER}:${DB_PASSWORD}@db:3306/${DB_NAME}
       REDIS_URL: redis://redis:6379
@@ -27,7 +24,7 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -38,12 +35,38 @@ services:
     image: redis:7.2
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    ports:
+      - "6379:6379"
     volumes:
       - redis_data:/data
+
+  celery_worker:
+    build: .
+    command: >
+      watchmedo auto-restart
+      --directory=/app/pastebin
+      --pattern=*.py
+      --recursive
+      --
+      celery -A pastebin worker -l info
+    depends_on:
+      - redis
+      - backend
+    volumes:
+      - ./pastebin:/app/pastebin
+
+  celery_beat:
+    build: .
+    command: celery -A pastebin beat -l info
+    depends_on:
+      - redis
+      - backend
+    volumes:
+      - ./pastebin:/app/pastebin
 
 volumes:
   db_data:

@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     gcc \
     default-libmysqlclient-dev \
     pkg-config \
-    && rm -rf /var/lib/apt/lists/*
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
 
 WORKDIR /app
 COPY --from=builder /root/.local /root/.local
