@@ -175,3 +175,6 @@ class CacheMethods(CacheConnect):
 
         if created:
             redis.incr(f"counter:paste:{paste_hash}:views_pending")
+
+    def generate_hashes(self):
+        pass

@@ -4,6 +4,8 @@ from django.db.models import F
 from django_redis import get_redis_connection
 
 from paste.models import Paste
+from paste.selectors import get_expires_pastes_queryset
+from paste.services import PasteService
 
 # scan 1000 views per 1 task
 SCAN_COUNT = 1000
@@ -54,3 +56,11 @@ def flush_paste_views():
                 redis.set('views:scan:cursor', cursor)
     finally:
         redis.delete('views:scan:lock')
+
+@shared_task(ignore_result=True)
+def delete_expired_pastes():
+    service = PasteService()
+    query_set = get_expires_pastes_queryset()
+
+    for paste in query_set:
+        service.delete_paste(paste.hash)

@@ -189,7 +189,10 @@ CELERY_BROKER_URL=f'redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/
 CELERY_BEAT_SCHEDULE = {
     "flush-paste-views": {
         "task": "paste.tasks.flush_paste_views",
-        # 5 on prod
         "schedule": 60.0,
+    },
+    "clean_expire_pastes": {
+        "task": "paste.tasks.delete_expired_pastes",
+        "schedule": 5.0,
     },
 }
