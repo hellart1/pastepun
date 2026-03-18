@@ -11,12 +11,13 @@
 <div class="paste-box">
     <div class="paste-header">
         <div class="paste-title">
-            Paste: {{ hash }}
+            Paste: {{ paste.hash }}
+            views: {{ views }}
         </div>
         
         <div class="paste-actions">
             {% if user.is_authenticated and user == paste.owner %}
-                <a href="{% url 'edit_paste' hash %}" class="btn">EDIT</a>
+                <a href="{% url 'edit_paste' paste.hash %}" class="btn">EDIT</a>
             {% endif %}
         </div>
     </div>

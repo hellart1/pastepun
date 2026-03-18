@@ -1,9 +1,10 @@
-{% extends 'paste/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
 <div class="error">
     <p>
-        {{ message }}
+        <h4>That paste doesn't exist, or you don't have permission</h4>
+        {{ status_code }}
     </p>
 </div>
 {% endblock %}
